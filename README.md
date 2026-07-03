@@ -1,4 +1,4 @@
-# GigFlow - Freelance Marketplace
+# GigMarket - Freelance Marketplace
 
 A mini-freelance marketplace platform where Clients can post jobs (Gigs) and freelancers can apply for them (Bids).
 
@@ -47,7 +47,7 @@ Create a `.env` file in the `backend` folder:
 
 ```env
 PORT=5001
-MONGODB_URI=mongodb://localhost:27017/gigflow
+MONGODB_URI=mongodb://localhost:27017/gigmarket
 JWT_SECRET=your_super_secret_jwt_key_change_in_production
 NODE_ENV=development
 CLIENT_URL=http://localhost:5173
@@ -57,7 +57,7 @@ CLIENT_URL=http://localhost:5173
 
 1. **Clone the repository**
 ```bash
-cd gigflow-assignment
+cd gigmarket-assignment
 ```
 
 2. **Install Backend Dependencies**
@@ -167,7 +167,7 @@ Socket.io provides instant notifications:
 ## Project Structure
 
 ```
-gigflow-assignment/
+gigmarket-assignment/
 ├── backend/
 │   ├── config/
 │   │   └── db.js

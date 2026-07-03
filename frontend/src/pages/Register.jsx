@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Zap, User, Mail, Lock, Eye, EyeOff, Loader2, ArrowRight } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { register, clearError } from '../store/slices/authSlice';
+import ThemeToggle from '../components/ThemeToggle';
 
 const Register = () => {
   const [name, setName] = useState('');
@@ -52,13 +53,17 @@ const Register = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-12">
+      <div className="fixed right-4 top-4 z-50">
+        <ThemeToggle />
+      </div>
+
       <div className="w-full max-w-md animate-fade-in">
         <Link to="/" className="flex items-center justify-center gap-2 mb-8">
           <div className="p-2 rounded-xl bg-gradient-to-br from-primary-400 to-primary-500">
             <Zap className="w-6 h-6 text-white" />
           </div>
           <span className="font-display font-bold text-2xl text-dark-900">
-            Gig<span className="text-primary-500">Flow</span>
+            Gig<span className="text-primary-500">Market</span>
           </span>
         </Link>
 
@@ -68,7 +73,7 @@ const Register = () => {
               Create Your Account
             </h1>
             <p className="text-dark-500">
-              Join GigFlow and start your journey
+              Join GigMarket and start your journey
             </p>
           </div>
 

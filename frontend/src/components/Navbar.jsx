@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { logout } from '../store/slices/authSlice';
 import { markAllAsRead } from '../store/slices/notificationSlice';
+import ThemeToggle from './ThemeToggle';
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -53,7 +54,7 @@ const Navbar = () => {
               <Zap className="w-5 h-5 text-white" />
             </div>
             <span className="font-display font-bold text-xl text-dark-900">
-              Gig<span className="text-primary-500">Flow</span>
+              Gig<span className="text-primary-500">Market</span>
             </span>
           </Link>
 
@@ -78,6 +79,8 @@ const Navbar = () => {
           </div>
 
           <div className="flex items-center gap-3">
+            <ThemeToggle />
+
             <div className="relative">
               <button 
                 onClick={() => {

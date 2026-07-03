@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Zap, Mail, Lock, Eye, EyeOff, Loader2, ArrowRight } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { login, clearError } from '../store/slices/authSlice';
+import ThemeToggle from '../components/ThemeToggle';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -40,13 +41,17 @@ const Login = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4">
+      <div className="fixed right-4 top-4 z-50">
+        <ThemeToggle />
+      </div>
+
       <div className="w-full max-w-md animate-fade-in">
         <Link to="/" className="flex items-center justify-center gap-2 mb-8">
           <div className="p-2 rounded-xl bg-gradient-to-br from-primary-400 to-primary-500">
             <Zap className="w-6 h-6 text-white" />
           </div>
           <span className="font-display font-bold text-2xl text-dark-900">
-            Gig<span className="text-primary-500">Flow</span>
+            Gig<span className="text-primary-500">Market</span>
           </span>
         </Link>
 
@@ -56,7 +61,7 @@ const Login = () => {
               Welcome Back
             </h1>
             <p className="text-dark-500">
-              Sign in to continue to GigFlow
+              Sign in to continue to GigMarket
             </p>
           </div>
 

@@ -51,7 +51,7 @@ app.use('/api/gigs', gigRoutes);
 app.use('/api/bids', bidRoutes);
 
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', message: 'GigFlow API is running' });
+  res.json({ status: 'ok', message: 'GigMarket API is running' });
 });
 
 app.use((err, req, res, next) => {

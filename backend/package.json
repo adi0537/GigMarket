@@ -1,7 +1,7 @@
 {
-  "name": "gigflow-backend",
+  "name": "gigmarket-backend",
   "version": "1.0.0",
-  "description": "GigFlow Backend API - Freelance Marketplace",
+  "description": "GigMarket Backend API - Freelance Marketplace",
   "main": "server.js",
   "type": "module",
   "scripts": {

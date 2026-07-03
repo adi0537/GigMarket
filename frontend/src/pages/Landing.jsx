@@ -1,27 +1,29 @@
 import { Link } from 'react-router-dom';
 import { Zap, ArrowRight, Briefcase, Users, Shield, Sparkles } from 'lucide-react';
+import ThemeToggle from '../components/ThemeToggle';
 
 const Landing = () => {
   return (
     <div className="min-h-screen">
       <div className="container mx-auto px-4 py-20">
-        <nav className="flex items-center justify-between mb-20">
+        <nav className="flex items-center justify-between gap-4 mb-20">
           <div className="flex items-center gap-2">
             <div className="p-2 rounded-xl bg-gradient-to-br from-primary-400 to-primary-500">
               <Zap className="w-6 h-6 text-white" />
             </div>
             <span className="font-display font-bold text-2xl text-dark-900">
-              Gig<span className="text-primary-500">Flow</span>
+              Gig<span className="text-primary-500">Market</span>
             </span>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3 sm:gap-4">
+            <ThemeToggle />
             <Link 
               to="/login" 
-              className="text-dark-600 hover:text-dark-900 transition-colors font-medium"
+              className="hidden sm:inline text-dark-600 hover:text-dark-900 transition-colors font-medium"
             >
               Sign In
             </Link>
-            <Link to="/register" className="btn-primary py-2 px-4">
+            <Link to="/register" className="btn-primary py-2 px-3 sm:px-4 text-sm sm:text-base">
               Get Started
             </Link>
           </div>
@@ -41,7 +43,7 @@ const Landing = () => {
           </h1>
           
           <p className="text-xl text-dark-500 mb-10 max-w-2xl mx-auto leading-relaxed">
-            GigFlow is the modern freelance marketplace where talent meets opportunity. 
+            GigMarket is the modern freelance marketplace where talent meets opportunity. 
             Post gigs, submit bids, and build amazing projects together.
           </p>
 
@@ -118,7 +120,7 @@ const Landing = () => {
 
       <footer className="border-t border-dark-200 py-8 mt-20">
         <div className="container mx-auto px-4 text-center text-dark-500 text-sm">
-          © 2026 GigFlow. All rights reserved.
+          © 2026 GigMarket. All rights reserved.
         </div>
       </footer>
     </div>
