@@ -2,9 +2,6 @@
 
 A mini-freelance marketplace platform where Clients can post jobs (Gigs) and freelancers can apply for them (Bids).
 
-## Demo
-https://drive.google.com/file/d/1AsMsdQT5URvKlaSIyw8jEl2uYKUUudj0/view?usp=sharing 
-
 ## Features
 
 ### Core Features
@@ -34,59 +31,6 @@ https://drive.google.com/file/d/1AsMsdQT5URvKlaSIyw8jEl2uYKUUudj0/view?usp=shari
 - Tailwind CSS for styling
 - Socket.io Client for real-time updates
 - React Router for navigation
-
-## Getting Started
-
-### Prerequisites
-- Node.js (v18+)
-- MongoDB (local or Atlas)
-
-### Environment Variables
-
-Create a `.env` file in the `backend` folder:
-
-```env
-PORT=5001
-MONGODB_URI=mongodb://localhost:27017/gigmarket
-JWT_SECRET=your_super_secret_jwt_key_change_in_production
-NODE_ENV=development
-CLIENT_URL=http://localhost:5173
-```
-
-### Installation
-
-1. **Clone the repository**
-```bash
-cd gigmarket-assignment
-```
-
-2. **Install Backend Dependencies**
-```bash
-cd backend
-npm install
-```
-
-3. **Install Frontend Dependencies**
-```bash
-cd ../frontend
-npm install
-```
-
-4. **Start MongoDB** (if running locally)
-
-5. **Start the Backend Server**
-```bash
-cd backend
-npm run dev
-```
-
-6. **Start the Frontend Development Server**
-```bash
-cd frontend
-npm run dev
-```
-
-7. **Open your browser** and navigate to `http://localhost:5173`
 
 ## API Endpoints
 
