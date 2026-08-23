@@ -47,7 +47,7 @@ const Navbar = () => {
 
   return (
     <nav className="bg-white/80 backdrop-blur-xl border-b border-dark-200 sticky top-0 z-50">
-      <div className="container mx-auto px-4">
+      <div className="w-full max-w-[1800px] mx-auto px-4 md:px-8 lg:px-12">
         <div className="flex items-center justify-between h-16">
           <Link to="/dashboard" className="flex items-center gap-2 group">
             <div className="p-2 rounded-xl bg-gradient-to-br from-primary-400 to-primary-500 group-hover:scale-110 transition-transform">

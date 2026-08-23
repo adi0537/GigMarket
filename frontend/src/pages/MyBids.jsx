@@ -79,7 +79,7 @@ const MyBids = () => {
         </Link>
       </div>
 
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         {[
           { label: 'Total', value: stats.total, filter: 'all' },
           { label: 'Pending', value: stats.pending, filter: 'pending' },

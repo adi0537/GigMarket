@@ -44,7 +44,7 @@ const MyGigs = () => {
         </Link>
       </div>
 
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {[
           { label: 'Total Gigs', value: stats.total, filter: 'all' },
           { label: 'Open', value: stats.open, filter: 'open' },
