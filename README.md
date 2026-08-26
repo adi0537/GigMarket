@@ -6,15 +6,16 @@ A mini-freelance marketplace platform where Clients can post jobs (Gigs) and fre
 
 ### Core Features
 - **User Authentication**: Secure JWT-based auth with HttpOnly cookies
-- **Fluid Roles**: Any user can post a job (Client) or bid on a job (Freelancer)
+- **Distinct Role-based Modes**: Fluidly switch between Client Mode (posting jobs) and Freelancer Mode (bidding on jobs) via seamless dashboards and distinct views.
 - **Gig Management**: Full CRUD for job listings
-- **Search & Filter**: Search gigs by title with status filtering
-- **Bidding System**: Submit proposals with message and price
+- **Search & Filter**: Search gigs by title with status filtering, smartly hiding your own gigs when browsing as a freelancer.
+- **Bidding System**: Submit proposals with message and price. Bidding restricted intelligently based on user role and state.
 - **Hiring Logic**: Atomic hiring with automatic bid status updates
 
 ### Bonus Features
+- **Real-Time Order & Negotiation Pipeline**: Live, persistent chat (MongoDB + Socket.io) allowing direct communication between clients and freelancers on specific gigs.
 - **Transactional Integrity**: MongoDB transactions prevent race conditions when hiring
-- **Real-time Updates**: Socket.io notifications for instant updates when hired
+- **Real-time Updates**: Socket.io notifications for instant updates when hired, rejected, or receiving new bids.
 
 ## Tech Stack
 

@@ -9,14 +9,16 @@ import {
   Trash2,
   CheckCircle,
   Users,
-  AlertCircle
+  AlertCircle,
+  MessageSquare
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { fetchGig, deleteGig, clearCurrentGig } from '../store/slices/gigSlice';
-import { fetchBidsForGig, hireBid } from '../store/slices/bidSlice';
+import { fetchBidsForGig, hireBid, fetchMyBids } from '../store/slices/bidSlice';
 import BidCard from '../components/BidCard';
 import BidForm from '../components/BidForm';
 import LoadingSpinner from '../components/LoadingSpinner';
+import ChatBox from '../components/ChatBox';
 
 const GigDetail = () => {
   const { id } = useParams();
@@ -24,15 +26,22 @@ const GigDetail = () => {
   const dispatch = useDispatch();
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [hiringBidId, setHiringBidId] = useState(null);
+  const [activeChatBidder, setActiveChatBidder] = useState(null);
 
   const { user } = useSelector((state) => state.auth);
   const { currentGig, isLoading: gigLoading } = useSelector((state) => state.gigs);
-  const { bidsForGig, isLoading: bidsLoading, hireLoading } = useSelector((state) => state.bids);
+  const { bidsForGig, myBids, isLoading: bidsLoading, hireLoading } = useSelector((state) => state.bids);
 
   const bids = bidsForGig[id] || [];
   const isOwner = currentGig?.ownerId?._id === user?._id;
-  const hasAlreadyBid = bids.some(bid => bid.freelancerId?._id === user?._id);
-  const userBid = bids.find(bid => bid.freelancerId?._id === user?._id);
+  
+  const hasAlreadyBid = isOwner 
+    ? bids.some(bid => bid.freelancerId?._id === user?._id)
+    : myBids.some(bid => bid.gigId?._id === id || bid.gigId === id);
+    
+  const userBid = isOwner 
+    ? bids.find(bid => bid.freelancerId?._id === user?._id)
+    : myBids.find(bid => bid.gigId?._id === id || bid.gigId === id);
 
   useEffect(() => {
     dispatch(fetchGig(id));
@@ -44,8 +53,10 @@ const GigDetail = () => {
   useEffect(() => {
     if (isOwner) {
       dispatch(fetchBidsForGig(id));
+    } else if (user) {
+      dispatch(fetchMyBids());
     }
-  }, [dispatch, id, isOwner]);
+  }, [dispatch, id, isOwner, user]);
 
   const handleDelete = async () => {
     try {
@@ -94,6 +105,26 @@ const GigDetail = () => {
     );
   }
 
+  // Determine chat receiver details
+  let chatReceiverId = null;
+  let chatReceiverName = null;
+
+  if (isOwner) {
+    if (currentGig.status === 'assigned' && currentGig.hiredFreelancerId) {
+      chatReceiverId = currentGig.hiredFreelancerId._id || currentGig.hiredFreelancerId;
+      chatReceiverName = currentGig.hiredFreelancerId.name || 'Hired Freelancer';
+    } else if (activeChatBidder) {
+      chatReceiverId = activeChatBidder._id;
+      chatReceiverName = activeChatBidder.name;
+    } else if (bids.length > 0) {
+      chatReceiverId = bids[0].freelancerId?._id;
+      chatReceiverName = bids[0].freelancerId?.name;
+    }
+  } else {
+    chatReceiverId = currentGig.ownerId?._id || currentGig.ownerId;
+    chatReceiverName = currentGig.ownerId?.name || 'Client';
+  }
+
   return (
     <div className="max-w-4xl mx-auto space-y-6 animate-fade-in">
       <button
@@ -108,9 +139,11 @@ const GigDetail = () => {
         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-6">
           <div>
             <div className="flex items-center gap-3 mb-3">
-              <span className={currentGig.status === 'open' ? 'status-open' : 'status-assigned'}>
-                {currentGig.status}
-              </span>
+              {!(hasAlreadyBid && !isOwner && currentGig.status === 'open') && (
+                <span className={currentGig.status === 'open' ? 'status-open' : 'status-assigned'}>
+                  {currentGig.status}
+                </span>
+              )}
               {currentGig.status === 'assigned' && (
                 <span className="text-sm text-green-600 flex items-center gap-1">
                   <CheckCircle className="w-4 h-4" />
@@ -172,6 +205,45 @@ const GigDetail = () => {
         )}
       </div>
 
+      {/* Real-time Order & Negotiation Chat Section */}
+      {(isOwner || hasAlreadyBid) && chatReceiverId && (
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="font-display font-semibold text-xl text-dark-900 flex items-center gap-2">
+              <MessageSquare className="w-5 h-5 text-primary-500" />
+              Order Communication & Negotiation
+            </h2>
+          </div>
+
+          {/* If owner has multiple bidders, allow choosing who to negotiate/chat with */}
+          {isOwner && currentGig.status === 'open' && bids.length > 1 && (
+            <div className="flex items-center gap-2 overflow-x-auto pb-2">
+              <span className="text-xs text-dark-500 font-medium whitespace-nowrap">Chat with:</span>
+              {bids.map((b) => (
+                <button
+                  key={b._id}
+                  onClick={() => setActiveChatBidder(b.freelancerId)}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                    (activeChatBidder?._id || bids[0]?.freelancerId?._id) === b.freelancerId?._id
+                      ? 'bg-primary-500 text-white shadow-sm'
+                      : 'bg-white border border-dark-200 text-dark-700 hover:bg-dark-50'
+                  }`}
+                >
+                  {b.freelancerId?.name}
+                </button>
+              ))}
+            </div>
+          )}
+
+          <ChatBox
+            gigId={id}
+            receiverId={chatReceiverId}
+            receiverName={chatReceiverName}
+            gigTitle={currentGig.title}
+          />
+        </div>
+      )}
+
       {isOwner && (
         <div className="space-y-4">
           <h2 className="font-display font-semibold text-xl text-dark-900 flex items-center gap-2">
@@ -216,7 +288,7 @@ const GigDetail = () => {
                 <div>
                   <h3 className="font-semibold text-dark-900 mb-1">Bid Submitted</h3>
                   <p className="text-dark-500 text-sm mb-3">
-                    You've already submitted a bid for this gig. The client will review your proposal.
+                    You've already submitted a bid for this gig. You can communicate directly with the client using the chat box above.
                   </p>
                   {userBid && (
                     <div className="flex items-center gap-4 text-sm">
@@ -241,7 +313,7 @@ const GigDetail = () => {
         </>
       )}
 
-      {!isOwner && currentGig.status === 'assigned' && (
+      {!isOwner && currentGig.status === 'assigned' && !hasAlreadyBid && (
         <div className="bg-white/80 backdrop-blur-xl border border-dark-200 rounded-2xl p-6 shadow-lg shadow-dark-200/10">
           <div className="flex items-start gap-4">
             <AlertCircle className="w-6 h-6 text-amber-500 flex-shrink-0" />

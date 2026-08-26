@@ -3,7 +3,7 @@ import { sendTokenResponse } from '../middleware/auth.js';
 
 export const register = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, role } = req.body;
 
     const userExists = await User.findOne({ email });
     if (userExists) {
@@ -16,7 +16,8 @@ export const register = async (req, res) => {
     const user = await User.create({
       name,
       email,
-      password
+      password,
+      role: role && ['buyer', 'seller'].includes(role) ? role : 'buyer'
     });
 
     sendTokenResponse(user, 201, res);
@@ -86,7 +87,42 @@ export const getMe = async (req, res) => {
     user: {
       _id: user._id,
       name: user.name,
-      email: user.email
+      email: user.email,
+      role: user.role || 'buyer'
     }
   });
+};
+
+export const updateRole = async (req, res) => {
+  try {
+    const { role } = req.body;
+    if (!role || !['buyer', 'seller'].includes(role)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid role provided. Role must be buyer or seller.'
+      });
+    }
+
+    const user = await User.findByIdAndUpdate(
+      req.user._id,
+      { role },
+      { new: true, runValidators: true }
+    );
+
+    res.status(200).json({
+      success: true,
+      message: `Role updated to ${role}`,
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role
+      }
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
 };

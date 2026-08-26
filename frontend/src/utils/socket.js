@@ -26,3 +26,15 @@ export const joinUserRoom = (userId) => {
     socket.emit('join', userId);
   }
 };
+
+export const joinGigChat = (gigId) => {
+  if (socket && gigId) {
+    socket.emit('join_gig_chat', gigId);
+  }
+};
+
+export const leaveGigChat = (gigId) => {
+  if (socket && gigId) {
+    socket.emit('leave_gig_chat', gigId);
+  }
+};

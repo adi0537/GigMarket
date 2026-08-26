@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { Zap, User, Mail, Lock, Eye, EyeOff, Loader2, ArrowRight } from 'lucide-react';
+import { Zap, User, Mail, Lock, Eye, EyeOff, Loader2, ArrowRight, Briefcase, ShoppingBag } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { register, clearError } from '../store/slices/authSlice';
 import ThemeToggle from '../components/ThemeToggle';
@@ -11,6 +11,7 @@ const Register = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [role, setRole] = useState('buyer');
   const [showPassword, setShowPassword] = useState(false);
   
   const dispatch = useDispatch();
@@ -48,7 +49,7 @@ const Register = () => {
       return;
     }
 
-    dispatch(register({ name, email, password }));
+    dispatch(register({ name, email, password, role }));
   };
 
   return (
@@ -78,6 +79,39 @@ const Register = () => {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
+            {/* Role Selection */}
+            <div>
+              <label className="block text-sm font-medium text-dark-700 mb-2">
+                I want to:
+              </label>
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  onClick={() => setRole('buyer')}
+                  className={`p-3 rounded-xl border flex flex-col items-center gap-2 transition-all ${
+                    role === 'buyer'
+                      ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/30 text-primary-600 font-semibold shadow-sm'
+                      : 'border-dark-200 bg-white dark:bg-dark-800 text-dark-600 dark:text-dark-300 hover:border-dark-300 dark:border-dark-700 dark:hover:border-dark-600'
+                  }`}
+                >
+                  <ShoppingBag className="w-5 h-5" />
+                  <span className="text-xs">Client</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setRole('seller')}
+                  className={`p-3 rounded-xl border flex flex-col items-center gap-2 transition-all ${
+                    role === 'seller'
+                      ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/30 text-primary-600 font-semibold shadow-sm'
+                      : 'border-dark-200 bg-white dark:bg-dark-800 text-dark-600 dark:text-dark-300 hover:border-dark-300 dark:border-dark-700 dark:hover:border-dark-600'
+                  }`}
+                >
+                  <Briefcase className="w-5 h-5" />
+                  <span className="text-xs">Freelancer</span>
+                </button>
+              </div>
+            </div>
+
             <div>
               <label className="block text-sm font-medium text-dark-700 mb-2">
                 Full Name

@@ -53,6 +53,19 @@ export const logout = createAsyncThunk(
   }
 );
 
+// Switch user role (buyer / seller)
+export const switchRole = createAsyncThunk(
+  'auth/switchRole',
+  async (role, { rejectWithValue }) => {
+    try {
+      const response = await api.put('/auth/role', { role });
+      return response.data.user;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || 'Role update failed');
+    }
+  }
+);
+
 const initialState = {
   user: null,
   isLoading: true,
@@ -121,6 +134,12 @@ const authSlice = createSlice({
         state.isAuthenticated = false;
         state.user = null;
         state.error = null;
+      })
+      // Switch Role
+      .addCase(switchRole.fulfilled, (state, action) => {
+        if (state.user) {
+          state.user.role = action.payload.role;
+        }
       });
   },
 });

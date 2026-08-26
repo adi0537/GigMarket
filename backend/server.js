@@ -9,6 +9,7 @@ import connectDB from './config/db.js';
 import authRoutes from './routes/authRoutes.js';
 import gigRoutes from './routes/gigRoutes.js';
 import bidRoutes from './routes/bidRoutes.js';
+import messageRoutes from './routes/messageRoutes.js';
 
 dotenv.config();
 
@@ -31,7 +32,17 @@ io.on('connection', (socket) => {
 
   socket.on('join', (userId) => {
     socket.join(`user_${userId}`);
-    console.log(`User ${userId} joined their notification room`);
+    console.log(`User ${userId} joined notification room`);
+  });
+
+  socket.on('join_gig_chat', (gigId) => {
+    socket.join(`gig_${gigId}`);
+    console.log(`Socket ${socket.id} joined chat room gig_${gigId}`);
+  });
+
+  socket.on('leave_gig_chat', (gigId) => {
+    socket.leave(`gig_${gigId}`);
+    console.log(`Socket ${socket.id} left chat room gig_${gigId}`);
   });
 
   socket.on('disconnect', () => {
@@ -49,6 +60,7 @@ app.use(cookieParser());
 app.use('/api/auth', authRoutes);
 app.use('/api/gigs', gigRoutes);
 app.use('/api/bids', bidRoutes);
+app.use('/api/messages', messageRoutes);
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'GigMarket API is running' });

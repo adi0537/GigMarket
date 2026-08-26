@@ -11,6 +11,7 @@ const Gigs = () => {
   const [debouncedSearch, setDebouncedSearch] = useState('');
   
   const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth);
   const { gigs, isLoading } = useSelector((state) => state.gigs);
 
   useEffect(() => {
@@ -28,6 +29,14 @@ const Gigs = () => {
   const handleClearSearch = useCallback(() => {
     setSearchQuery('');
   }, []);
+
+  const displayedGigs = gigs.filter((gig) => {
+    // If the user is a seller, they shouldn't see their own posted gigs in the browse market view
+    if (user?.role === 'seller' && (gig.ownerId?._id === user?._id || gig.ownerId === user?._id)) {
+      return false;
+    }
+    return true;
+  });
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -90,7 +99,7 @@ const Gigs = () => {
         <div className="flex justify-center py-20">
           <LoadingSpinner size="lg" />
         </div>
-      ) : gigs.length === 0 ? (
+      ) : displayedGigs.length === 0 ? (
         <div className="bg-white/80 backdrop-blur-xl border border-dark-200 rounded-2xl p-6 shadow-lg shadow-dark-200/10 text-center py-16">
           <Briefcase className="w-16 h-16 text-dark-300 mx-auto mb-4" />
           <h3 className="text-xl font-semibold text-dark-900 mb-2">No gigs found</h3>
@@ -103,11 +112,11 @@ const Gigs = () => {
       ) : (
         <>
           <p className="text-dark-500 text-sm">
-            Showing {gigs.length} {gigs.length === 1 ? 'gig' : 'gigs'}
+            Showing {displayedGigs.length} {displayedGigs.length === 1 ? 'gig' : 'gigs'}
             {searchQuery && ` matching "${searchQuery}"`}
           </p>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {gigs.map((gig, index) => (
+            {displayedGigs.map((gig, index) => (
               <div 
                 key={gig._id} 
                 className="animate-slide-up"
