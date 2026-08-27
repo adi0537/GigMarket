@@ -184,15 +184,19 @@ const Navbar = () => {
                 }}
                 className="flex items-center gap-2 px-3 py-2 rounded-xl text-dark-600 hover:text-dark-900 hover:bg-dark-100 transition-all"
               >
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary-400 to-primary-500 flex items-center justify-center text-white font-semibold text-sm">
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-primary-400 to-primary-500 flex items-center justify-center text-white font-semibold text-sm">
                   {user?.name?.charAt(0).toUpperCase()}
                 </div>
-                <span className="text-sm font-medium">{user?.name}</span>
-                <ChevronDown className="w-4 h-4" />
+                <span className="text-sm font-medium max-w-[120px] lg:max-w-[160px] truncate">{user?.name}</span>
+                <ChevronDown className="w-4 h-4 flex-shrink-0" />
               </button>
 
               {isProfileOpen && (
-                <div className="absolute right-0 mt-2 w-52 bg-white/95 backdrop-blur-xl rounded-2xl shadow-xl border border-dark-200 p-2 animate-slide-down">
+                <div className="absolute right-0 mt-2 w-64 bg-white/95 backdrop-blur-xl rounded-2xl shadow-xl border border-dark-200 p-2 animate-slide-down">
+                  <div className="px-3 py-2.5 border-b border-dark-100 mb-2">
+                    <p className="text-sm font-semibold text-dark-900 truncate" title={user?.name}>{user?.name}</p>
+                    <p className="text-xs text-dark-500 truncate mt-0.5" title={user?.email}>{user?.email}</p>
+                  </div>
                   <div className="px-3 py-2 border-b border-dark-100 mb-1">
                     <p className="text-xs text-dark-400 font-medium">Role Mode</p>
                     <p className="text-xs font-semibold capitalize text-primary-600">{currentRole}</p>
@@ -226,6 +230,15 @@ const Navbar = () => {
 
         {isMobileMenuOpen && (
           <div className="md:hidden py-4 border-t border-dark-200 dark:border-dark-800 animate-slide-down">
+            <div className="px-4 py-3 mb-2 flex items-center gap-3 border-b border-dark-200 pb-4">
+              <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-primary-400 to-primary-500 flex items-center justify-center text-white font-semibold text-lg">
+                {user?.name?.charAt(0).toUpperCase()}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold text-dark-900 truncate" title={user?.name}>{user?.name}</p>
+                <p className="text-xs text-dark-500 truncate" title={user?.email}>{user?.email}</p>
+              </div>
+            </div>
             <div className="px-4 py-2 mb-2 bg-dark-50 dark:bg-dark-800/50 rounded-xl flex items-center justify-between">
               <span className="text-xs font-semibold text-dark-600 dark:text-dark-400">Active Mode: <span className="capitalize text-primary-600">{currentRole === 'buyer' ? 'Client' : 'Freelancer'}</span></span>
               <button
