@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Send, MessageSquare, Loader2, User, Sparkles } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { fetchGigMessages, sendMessage, addIncomingMessage } from '../store/slices/messageSlice';
-import { getSocket, joinGigChat, leaveGigChat } from '../utils/socket';
+import { initSocket, joinGigChat, leaveGigChat } from '../utils/socket';
 import LoadingSpinner from './LoadingSpinner';
 
 const ChatBox = ({ gigId, receiverId, receiverName, gigTitle }) => {
@@ -17,23 +17,28 @@ const ChatBox = ({ gigId, receiverId, receiverName, gigTitle }) => {
   useEffect(() => {
     if (gigId) {
       dispatch(fetchGigMessages(gigId));
+
+      const socket = initSocket();
       joinGigChat(gigId);
 
-      const socket = getSocket();
-      if (socket) {
-        const handleNewMessage = (msg) => {
-          if (msg.gigId === gigId) {
-            dispatch(addIncomingMessage(msg));
-          }
-        };
+      const handleNewMessage = (msg) => {
+        if (msg.gigId === gigId) {
+          dispatch(addIncomingMessage(msg));
+        }
+      };
 
-        socket.on('new_message', handleNewMessage);
+      const handleReconnect = () => {
+        joinGigChat(gigId);
+      };
 
-        return () => {
-          socket.off('new_message', handleNewMessage);
-          leaveGigChat(gigId);
-        };
-      }
+      socket.on('new_message', handleNewMessage);
+      socket.on('connect', handleReconnect);
+
+      return () => {
+        socket.off('new_message', handleNewMessage);
+        socket.off('connect', handleReconnect);
+        leaveGigChat(gigId);
+      };
     }
   }, [gigId, dispatch]);
 
