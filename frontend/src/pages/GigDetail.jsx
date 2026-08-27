@@ -34,6 +34,7 @@ const GigDetail = () => {
 
   const bids = bidsForGig[id] || [];
   const isOwner = currentGig?.ownerId?._id === user?._id;
+  const currentRole = user?.role || 'buyer';
   
   const hasAlreadyBid = isOwner 
     ? bids.some(bid => bid.freelancerId?._id === user?._id)
@@ -156,7 +157,7 @@ const GigDetail = () => {
             </h1>
           </div>
 
-          {isOwner && currentGig.status === 'open' && (
+          {isOwner && currentGig.status === 'open' && currentRole === 'buyer' && (
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setShowDeleteConfirm(true)}
@@ -206,7 +207,7 @@ const GigDetail = () => {
       </div>
 
       {/* Real-time Order & Negotiation Chat Section */}
-      {(isOwner || hasAlreadyBid) && chatReceiverId && (
+      {((isOwner && currentRole === 'buyer') || (!isOwner && hasAlreadyBid && currentRole === 'seller')) && chatReceiverId && (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <h2 className="font-display font-semibold text-xl text-dark-900 flex items-center gap-2">
@@ -269,7 +270,7 @@ const GigDetail = () => {
                 <BidCard 
                   key={bid._id} 
                   bid={bid} 
-                  isOwner={isOwner && currentGig.status === 'open'}
+                  isOwner={isOwner && currentGig.status === 'open' && currentRole === 'buyer'}
                   onHire={handleHire}
                   hireLoading={hireLoading && hiringBidId === bid._id}
                 />
@@ -288,7 +289,8 @@ const GigDetail = () => {
                 <div>
                   <h3 className="font-semibold text-dark-900 mb-1">Bid Submitted</h3>
                   <p className="text-dark-500 text-sm mb-3">
-                    You've already submitted a bid for this gig. You can communicate directly with the client using the chat box above.
+                    You've already submitted a bid for this gig. 
+                    {currentRole === 'seller' && " You can communicate directly with the client using the chat box above."}
                   </p>
                   {userBid && (
                     <div className="flex items-center gap-4 text-sm">
@@ -303,12 +305,18 @@ const GigDetail = () => {
                 </div>
               </div>
             </div>
-          ) : (
+          ) : currentRole === 'seller' ? (
             <BidForm 
               gigId={id} 
               gigBudget={currentGig.budget}
               onSuccess={() => dispatch(fetchGig(id))}
             />
+          ) : (
+            <div className="bg-white/80 backdrop-blur-xl border border-dark-200 rounded-2xl p-6 shadow-lg shadow-dark-200/10 text-center">
+              <AlertCircle className="w-12 h-12 text-dark-300 mx-auto mb-4" />
+              <h3 className="text-lg font-semibold text-dark-900 mb-2">Switch to Freelancer Mode</h3>
+              <p className="text-dark-500 mb-4">You must be in Freelancer mode to submit a bid.</p>
+            </div>
           )}
         </>
       )}

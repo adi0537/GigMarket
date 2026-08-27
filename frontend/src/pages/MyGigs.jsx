@@ -10,6 +10,8 @@ const MyGigs = () => {
   const [statusFilter, setStatusFilter] = useState('all');
   const dispatch = useDispatch();
   const { myGigs, isLoading } = useSelector((state) => state.gigs);
+  const { user } = useSelector((state) => state.auth);
+  const currentRole = user?.role || 'buyer';
 
   useEffect(() => {
     dispatch(fetchMyGigs());
@@ -38,10 +40,12 @@ const MyGigs = () => {
             Manage your posted job listings
           </p>
         </div>
-        <Link to="/gigs/create" className="btn-primary flex items-center gap-2 whitespace-nowrap">
-          <PlusCircle className="w-5 h-5" />
-          Post New Gig
-        </Link>
+        {currentRole === 'buyer' && (
+          <Link to="/gigs/create" className="btn-primary flex items-center gap-2 whitespace-nowrap">
+            <PlusCircle className="w-5 h-5" />
+            Post New Gig
+          </Link>
+        )}
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -96,7 +100,7 @@ const MyGigs = () => {
               ? 'Start by posting your first job listing!'
               : `You don't have any ${statusFilter} gigs right now.`}
           </p>
-          {statusFilter === 'all' && (
+          {statusFilter === 'all' && currentRole === 'buyer' && (
             <Link to="/gigs/create" className="btn-primary inline-flex items-center gap-2">
               <PlusCircle className="w-5 h-5" />
               Post Your First Gig

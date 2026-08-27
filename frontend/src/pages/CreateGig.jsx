@@ -20,6 +20,8 @@ const CreateGig = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { isLoading } = useSelector((state) => state.gigs);
+  const { user } = useSelector((state) => state.auth);
+  const currentRole = user?.role || 'buyer';
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -52,6 +54,20 @@ const CreateGig = () => {
       toast.error(error);
     }
   };
+
+  if (currentRole === 'seller') {
+    return (
+      <div className="max-w-2xl mx-auto space-y-6 animate-fade-in text-center mt-20">
+        <div className="bg-white/80 backdrop-blur-xl border border-dark-200 rounded-2xl p-8 shadow-lg">
+          <h2 className="text-2xl font-bold text-dark-900 mb-4">Switch to Client Mode</h2>
+          <p className="text-dark-600 mb-6">You must be in Client mode to post a new gig.</p>
+          <button onClick={() => navigate('/dashboard')} className="btn-primary px-6 py-2">
+            Go to Dashboard
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-2xl mx-auto space-y-6 animate-fade-in">
