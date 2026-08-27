@@ -19,7 +19,7 @@ const AppToaster = () => {
         },
         success: {
           iconTheme: {
-            primary: '#f08573',
+            primary: '#a855f7',
             secondary: '#ffffff',
           },
         },

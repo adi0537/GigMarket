@@ -145,13 +145,13 @@ html.dark .animated-bg {
   left: -50%;
   width: 200%;
   height: 200%;
-  background: radial-gradient(circle at 30% 30%, rgba(240, 133, 115, 0.05) 0%, transparent 50%),
-              radial-gradient(circle at 70% 70%, rgba(240, 133, 115, 0.03) 0%, transparent 50%);
+  background: radial-gradient(circle at 30% 30%, rgba(168, 85, 247, 0.05) 0%, transparent 50%),
+              radial-gradient(circle at 70% 70%, rgba(168, 85, 247, 0.03) 0%, transparent 50%);
   animation: float 20s ease-in-out infinite;
 }
 
 html.dark .animated-bg::before {
-  background: radial-gradient(circle at 28% 24%, rgba(229, 107, 87, 0.13) 0%, transparent 42%),
+  background: radial-gradient(circle at 28% 24%, rgba(168, 85, 247, 0.13) 0%, transparent 42%),
               radial-gradient(circle at 72% 70%, rgba(168, 150, 128, 0.08) 0%, transparent 48%);
 }
 
@@ -201,20 +201,20 @@ html.dark ::-webkit-scrollbar-thumb:hover {
 
 .dark .bg-primary-50,
 .dark .bg-primary-50\/40 {
-  background-color: rgba(120, 51, 40, 0.22);
+  background-color: rgba(88, 28, 135, 0.22);
 }
 
 .dark .bg-primary-50\/50 {
-  background-color: rgba(120, 51, 40, 0.28);
+  background-color: rgba(88, 28, 135, 0.28);
 }
 
 .dark .bg-primary-100,
 .dark .bg-primary-100\/60 {
-  background-color: rgba(175, 63, 45, 0.26);
+  background-color: rgba(126, 34, 206, 0.26);
 }
 
 .dark .bg-primary-200 {
-  background-color: rgba(209, 79, 58, 0.3);
+  background-color: rgba(147, 51, 234, 0.3);
 }
 
 .dark .bg-blue-50,
@@ -288,11 +288,11 @@ html.dark ::-webkit-scrollbar-thumb:hover {
 
 .dark .text-primary-600,
 .dark .text-primary-700 {
-  color: #f9b4a7;
+  color: #d8b4fe;
 }
 
 .dark .text-primary-500 {
-  color: #f08573;
+  color: #c084fc;
 }
 
 .dark .text-blue-600,
@@ -318,7 +318,7 @@ html.dark ::-webkit-scrollbar-thumb:hover {
 .dark .border-primary-100,
 .dark .border-primary-200,
 .dark .border-primary-300 {
-  border-color: rgba(240, 133, 115, 0.32);
+  border-color: rgba(192, 132, 252, 0.32);
 }
 
 .dark .border-blue-200,
@@ -344,11 +344,11 @@ html.dark ::-webkit-scrollbar-thumb:hover {
 }
 
 .dark .hover\:bg-primary-100\/60:hover {
-  background-color: rgba(175, 63, 45, 0.34);
+  background-color: rgba(126, 34, 206, 0.34);
 }
 
 .dark .hover\:bg-primary-200:hover {
-  background-color: rgba(209, 79, 58, 0.34);
+  background-color: rgba(147, 51, 234, 0.34);
 }
 
 .dark .hover\:bg-blue-100\/60:hover {
