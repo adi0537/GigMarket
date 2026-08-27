@@ -14,7 +14,7 @@ import {
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { fetchGig, deleteGig, clearCurrentGig } from '../store/slices/gigSlice';
-import { fetchBidsForGig, hireBid, fetchMyBids } from '../store/slices/bidSlice';
+import { fetchBidsForGig, hireBid, rejectBid, fetchMyBids } from '../store/slices/bidSlice';
 import BidCard from '../components/BidCard';
 import BidForm from '../components/BidForm';
 import LoadingSpinner from '../components/LoadingSpinner';
@@ -26,11 +26,12 @@ const GigDetail = () => {
   const dispatch = useDispatch();
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [hiringBidId, setHiringBidId] = useState(null);
+  const [rejectingBidId, setRejectingBidId] = useState(null);
   const [activeChatBidder, setActiveChatBidder] = useState(null);
 
   const { user } = useSelector((state) => state.auth);
   const { currentGig, isLoading: gigLoading } = useSelector((state) => state.gigs);
-  const { bidsForGig, myBids, isLoading: bidsLoading, hireLoading } = useSelector((state) => state.bids);
+  const { bidsForGig, myBids, isLoading: bidsLoading, hireLoading, rejectLoading } = useSelector((state) => state.bids);
 
   const bids = bidsForGig[id] || [];
   const isOwner = currentGig?.ownerId?._id === user?._id;
@@ -79,6 +80,18 @@ const GigDetail = () => {
       toast.error(error);
     } finally {
       setHiringBidId(null);
+    }
+  };
+
+  const handleReject = async (bidId) => {
+    setRejectingBidId(bidId);
+    try {
+      await dispatch(rejectBid(bidId)).unwrap();
+      toast.success('Bid rejected.');
+    } catch (error) {
+      toast.error(error);
+    } finally {
+      setRejectingBidId(null);
     }
   };
 
@@ -272,7 +285,9 @@ const GigDetail = () => {
                   bid={bid} 
                   isOwner={isOwner && currentGig.status === 'open' && currentRole === 'buyer'}
                   onHire={handleHire}
+                  onReject={handleReject}
                   hireLoading={hireLoading && hiringBidId === bid._id}
+                  rejectLoading={rejectLoading && rejectingBidId === bid._id}
                 />
               ))}
             </div>

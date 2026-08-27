@@ -1,6 +1,6 @@
 import { DollarSign, Clock, CheckCircle, XCircle, Loader2 } from 'lucide-react';
 
-const BidCard = ({ bid, isOwner = false, onHire, hireLoading = false }) => {
+const BidCard = ({ bid, isOwner = false, onHire, onReject, hireLoading = false, rejectLoading = false }) => {
   const formatDate = (date) => {
     return new Date(date).toLocaleDateString('en-US', {
       month: 'short',
@@ -76,23 +76,33 @@ const BidCard = ({ bid, isOwner = false, onHire, hireLoading = false }) => {
         </div>
 
         {isOwner && bid.status === 'pending' && (
-          <button
-            onClick={() => onHire(bid._id)}
-            disabled={hireLoading}
-            className="btn-primary py-2 px-4 text-sm flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {hireLoading ? (
-              <>
-                <Loader2 className="w-4 h-4 animate-spin" />
-                Hiring...
-              </>
-            ) : (
-              <>
-                <CheckCircle className="w-4 h-4" />
-                Hire
-              </>
-            )}
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => onReject && onReject(bid._id)}
+              disabled={hireLoading || rejectLoading}
+              className="btn-secondary py-2 px-4 text-sm flex items-center gap-2 text-red-500 hover:text-red-600 hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <XCircle className="w-4 h-4" />
+              Reject
+            </button>
+            <button
+              onClick={() => onHire(bid._id)}
+              disabled={hireLoading || rejectLoading}
+              className="btn-primary py-2 px-4 text-sm flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {hireLoading ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Hiring...
+                </>
+              ) : (
+                <>
+                  <CheckCircle className="w-4 h-4" />
+                  Hire
+                </>
+              )}
+            </button>
+          </div>
         )}
       </div>
     </div>

@@ -4,9 +4,13 @@ let socket = null;
 
 export const initSocket = () => {
   if (!socket) {
-    const serverUrl = import.meta.env.VITE_SOCKET_URL || '/';
+    const isProd = import.meta.env.PROD;
+    const defaultUrl = isProd ? 'https://gigmarket-api.onrender.com' : 'http://localhost:5001';
+    const serverUrl = import.meta.env.VITE_SOCKET_URL || defaultUrl;
+    
     socket = io(serverUrl, {
       withCredentials: true,
+      transports: ['websocket', 'polling']
     });
   }
   return socket;

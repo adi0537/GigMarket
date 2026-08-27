@@ -223,6 +223,60 @@ export const hireBid = async (req, res) => {
   }
 };
 
+export const rejectBid = async (req, res) => {
+  try {
+    const bid = await Bid.findById(req.params.bidId).populate('gigId');
+    
+    if (!bid) {
+      return res.status(404).json({
+        success: false,
+        message: 'Bid not found'
+      });
+    }
+
+    const gig = bid.gigId;
+
+    if (gig.ownerId.toString() !== req.user._id.toString()) {
+      return res.status(403).json({
+        success: false,
+        message: 'Only the gig owner can reject bids'
+      });
+    }
+
+    if (bid.status !== 'pending') {
+      return res.status(400).json({
+        success: false,
+        message: 'This bid is no longer pending'
+      });
+    }
+
+    const updatedBid = await Bid.findByIdAndUpdate(bid._id, { status: 'rejected' }, { new: true })
+      .populate('freelancerId', 'name email')
+      .populate('gigId', 'title');
+
+    const io = req.app.get('io');
+    if (io) {
+      io.to(`user_${bid.freelancerId._id || bid.freelancerId}`).emit('bidRejected', {
+        gigId: gig._id,
+        gigTitle: gig.title,
+        message: `Your bid for "${gig.title}" was rejected by the client`
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Bid rejected successfully',
+      bid: updatedBid
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+};
+
 export const getMyBids = async (req, res) => {
   try {
     const bids = await Bid.find({ freelancerId: req.user._id })

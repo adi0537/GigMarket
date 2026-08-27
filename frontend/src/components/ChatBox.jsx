@@ -22,7 +22,9 @@ const ChatBox = ({ gigId, receiverId, receiverName, gigTitle }) => {
       joinGigChat(gigId);
 
       const handleNewMessage = (msg) => {
-        if (msg.gigId === gigId) {
+        console.log('Received socket new_message:', msg);
+        const msgGigId = msg.gigId?._id || msg.gigId;
+        if (msgGigId?.toString() === gigId?.toString()) {
           dispatch(addIncomingMessage(msg));
         }
       };
@@ -99,16 +101,30 @@ const ChatBox = ({ gigId, receiverId, receiverName, gigTitle }) => {
           <div className="h-full flex items-center justify-center">
             <LoadingSpinner />
           </div>
-        ) : messages.length === 0 ? (
-          <div className="h-full flex flex-col items-center justify-center text-center p-6 text-dark-400">
-            <Sparkles className="w-10 h-10 text-primary-400 mb-2 animate-bounce" />
-            <p className="font-medium text-dark-700">No messages yet</p>
-            <p className="text-xs text-dark-500 max-w-xs mt-1">
-              Start the negotiation or discuss project requirements directly here. Persistent chat history will be saved in MongoDB.
-            </p>
-          </div>
-        ) : (
-          messages.map((msg) => {
+        ) : (() => {
+          const filteredMessages = messages.filter(msg => {
+            const senderId = msg.senderId?._id || msg.senderId;
+            const msgReceiverId = msg.receiverId?._id || msg.receiverId;
+            const currentUserId = user?._id;
+            return (
+              (senderId === currentUserId && msgReceiverId === receiverId) ||
+              (senderId === receiverId && msgReceiverId === currentUserId)
+            );
+          });
+
+          if (filteredMessages.length === 0) {
+            return (
+              <div className="h-full flex flex-col items-center justify-center text-center p-6 text-dark-400">
+                <Sparkles className="w-10 h-10 text-primary-400 mb-2 animate-bounce" />
+                <p className="font-medium text-dark-700">No messages yet</p>
+                <p className="text-xs text-dark-500 max-w-xs mt-1">
+                  Start the negotiation or discuss project requirements directly here. Persistent chat history will be saved in MongoDB.
+                </p>
+              </div>
+            );
+          }
+
+          return filteredMessages.map((msg) => {
             const isMe = msg.senderId?._id === user?._id || msg.senderId === user?._id;
             const senderName = isMe ? 'You' : (msg.senderId?.name || receiverName);
 
@@ -131,8 +147,8 @@ const ChatBox = ({ gigId, receiverId, receiverName, gigTitle }) => {
                 </div>
               </div>
             );
-          })
-        )}
+          });
+        })()}
         <div ref={messagesEndRef} />
       </div>
 

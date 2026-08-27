@@ -53,12 +53,26 @@ export const hireBid = createAsyncThunk(
   }
 );
 
+// Reject a bid
+export const rejectBid = createAsyncThunk(
+  'bids/rejectBid',
+  async (bidId, { rejectWithValue }) => {
+    try {
+      const response = await api.patch(`/bids/${bidId}/reject`);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || 'Failed to reject bid');
+    }
+  }
+);
+
 const initialState = {
   bidsForGig: {},
   myBids: [],
   isLoading: false,
   error: null,
   hireLoading: false,
+  rejectLoading: false,
 };
 
 const bidSlice = createSlice({
@@ -149,6 +163,25 @@ const bidSlice = createSlice({
       })
       .addCase(hireBid.rejected, (state, action) => {
         state.hireLoading = false;
+        state.error = action.payload;
+      })
+      // Reject Bid
+      .addCase(rejectBid.pending, (state) => {
+        state.rejectLoading = true;
+        state.error = null;
+      })
+      .addCase(rejectBid.fulfilled, (state, action) => {
+        state.rejectLoading = false;
+        const { bid } = action.payload;
+        // Update bid status in bidsForGig
+        if (state.bidsForGig[bid.gigId._id || bid.gigId]) {
+          state.bidsForGig[bid.gigId._id || bid.gigId] = state.bidsForGig[bid.gigId._id || bid.gigId].map(b => 
+            b._id === bid._id ? { ...b, status: 'rejected' } : b
+          );
+        }
+      })
+      .addCase(rejectBid.rejected, (state, action) => {
+        state.rejectLoading = false;
         state.error = action.payload;
       });
   },
